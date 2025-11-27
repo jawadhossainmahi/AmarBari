@@ -2,26 +2,36 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
-package View;
+package View.Dashboard;
 
 import Models.Users;
 import Util.LocalSession;
-import View.Dashboard.Dashboard;
+import View.Main;
+import java.awt.BorderLayout;
 
 /**
  *
  * @author Mahi
  */
-public class Main extends javax.swing.JFrame {
+public class Dashboard extends javax.swing.JFrame {
 
-    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(Main.class.getName());
+    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(Dashboard.class.getName());
+    private String fName, lName, email, username, user_type;
 
     /**
-     * Creates new form Main
+     * Creates new form Dashboard
      */
-    public Main() {
+    public Dashboard() {
         initComponents();
         this.setLocationRelativeTo(null);
+        Users user = LocalSession.loadUser();
+        fName = user.getFirstName();
+        lName = user.getLastName();
+        email = user.getEmail();
+        username = user.getUsername();
+        user_type = user.getUserType();
+        String msg = "Welcome " + user.getUsername();
+        jLabel1.setText(msg);
     }
 
     /**
@@ -34,96 +44,95 @@ public class Main extends javax.swing.JFrame {
     private void initComponents() {
         java.awt.GridBagConstraints gridBagConstraints;
 
-        jPanel1 = new javax.swing.JPanel();
+        jMenuItem1 = new javax.swing.JMenuItem();
+        jContainer = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
+        jMenuBar1 = new javax.swing.JMenuBar();
+        jMenu2 = new javax.swing.JMenu();
+        jMenu3 = new javax.swing.JMenu();
+        jMenu4 = new javax.swing.JMenu();
+        jMenuItem3 = new javax.swing.JMenuItem();
+
+        jMenuItem1.setText("jMenuItem1");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jPanel1.setBackground(new java.awt.Color(0, 51, 51));
-        jPanel1.setLayout(new java.awt.GridBagLayout());
-
-        jPanel2.setOpaque(false);
+        jContainer.setLayout(new java.awt.GridBagLayout());
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        jLabel1.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel1.setText("Welcome to My project");
-
-        jButton1.setText("Continue");
-        jButton1.addActionListener(this::jButton1ActionPerformed);
+        jLabel1.setText("Welcome");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap(57, Short.MAX_VALUE)
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 208, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(48, Short.MAX_VALUE))
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(114, 114, 114)
-                .addComponent(jButton1)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(91, 91, 91)
+                .addComponent(jLabel1)
+                .addContainerGap(92, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(27, 27, 27)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                .addContainerGap(43, Short.MAX_VALUE)
                 .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jButton1)
-                .addContainerGap(13, Short.MAX_VALUE))
+                .addGap(41, 41, 41))
         );
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
-        gridBagConstraints.ipadx = 93;
-        gridBagConstraints.ipady = 7;
+        gridBagConstraints.ipadx = 86;
+        gridBagConstraints.ipady = 37;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.insets = new java.awt.Insets(159, 127, 191, 113);
-        jPanel1.add(jPanel2, gridBagConstraints);
+        gridBagConstraints.insets = new java.awt.Insets(149, 145, 169, 146);
+        jContainer.add(jPanel2, gridBagConstraints);
+
+        jMenu2.setText("Edit");
+        jMenuBar1.add(jMenu2);
+
+        jMenu3.setText("jMenu3");
+        jMenuBar1.add(jMenu3);
+
+        jMenu4.setText("profile");
+        jMenu4.addActionListener(this::jMenu4ActionPerformed);
+
+        jMenuItem3.setText("view");
+        jMenuItem3.addActionListener(this::jMenuItem3ActionPerformed);
+        jMenu4.add(jMenuItem3);
+
+        jMenuBar1.add(jMenu4);
+
+        setJMenuBar(jMenuBar1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 553, Short.MAX_VALUE)
+            .addComponent(jContainer, javax.swing.GroupLayout.DEFAULT_SIZE, 553, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jContainer, javax.swing.GroupLayout.DEFAULT_SIZE, 427, Short.MAX_VALUE)
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        Users currentUser = LocalSession.loadUser();
+    private void jMenu4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenu4ActionPerformed
 
-        if (currentUser != null && currentUser.getUsername() != null && !currentUser.getUsername().isEmpty()) {
+    }//GEN-LAST:event_jMenu4ActionPerformed
 
-            // User session exists → go to dashboard
-            new Dashboard().setVisible(true);
-            this.dispose();
-
-        } else {
-
-            // No session → show login page
-            jPanel1.setVisible(false);
-
-            LoginContainer lp = new LoginContainer();
-            lp.setSize(this.getSize());
-            lp.setVisible(true);
-
-            this.setTitle("Login Page");
-            this.setContentPane(lp);
-            this.revalidate();
-        }
-
-
-    }//GEN-LAST:event_jButton1ActionPerformed
+    private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
+        System.out.println("clicked");
+        Profile view = new Profile(fName, lName, email, username, user_type);
+        jContainer.removeAll();
+        jContainer.add(view);
+        jContainer.revalidate();
+        jContainer.repaint();
+        this.setTitle("Profile Page");
+    }//GEN-LAST:event_jMenuItem3ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -147,13 +156,18 @@ public class Main extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(() -> new Main().setVisible(true));
+        java.awt.EventQueue.invokeLater(() -> new Dashboard().setVisible(true));
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
+    private javax.swing.JPanel jContainer;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JPanel jPanel1;
+    private javax.swing.JMenu jMenu2;
+    private javax.swing.JMenu jMenu3;
+    private javax.swing.JMenu jMenu4;
+    private javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JMenuItem jMenuItem1;
+    private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JPanel jPanel2;
     // End of variables declaration//GEN-END:variables
 }

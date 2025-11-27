@@ -4,6 +4,12 @@
  */
 package View;
 
+import Models.Users;
+import Util.LocalSession;
+import Util.Response;
+import View.Dashboard.Dashboard;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author Mahi
@@ -31,7 +37,7 @@ public class LoginContainer extends javax.swing.JPanel {
         jPanel4 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
+        username = new javax.swing.JTextField();
         jPasswordField1 = new javax.swing.JPasswordField();
         jButton2 = new javax.swing.JButton();
         jToggleButton1 = new javax.swing.JToggleButton();
@@ -51,6 +57,7 @@ public class LoginContainer extends javax.swing.JPanel {
         jLabel3.setText("Password :");
 
         jButton2.setText("Login");
+        jButton2.addActionListener(this::jButton2ActionPerformed);
 
         jToggleButton1.setText("show");
 
@@ -86,7 +93,7 @@ public class LoginContainer extends javax.swing.JPanel {
                                 .addComponent(jLabel3))
                             .addGap(18, 18, 18)
                             .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addComponent(jTextField1)
+                                .addComponent(username)
                                 .addComponent(jPasswordField1, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGap(18, 18, 18)
                             .addComponent(jToggleButton1))))
@@ -104,7 +111,7 @@ public class LoginContainer extends javax.swing.JPanel {
                 .addGap(18, 18, 18)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(username, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
@@ -146,7 +153,7 @@ public class LoginContainer extends javax.swing.JPanel {
 
         if (window instanceof javax.swing.JFrame frame) {
             RegisterContainer rgf = new RegisterContainer();
-            
+
             rgf.setSize(frame.getSize());
             frame.setContentPane(rgf);
             frame.setTitle("Register Page");
@@ -154,6 +161,29 @@ public class LoginContainer extends javax.swing.JPanel {
             frame.repaint();
         }
     }//GEN-LAST:event_jButton3ActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        String Lusername = username.getText().trim();
+        String Lpassword = new String(jPasswordField1.getPassword()).trim();
+
+        Response res = Users.login(Lusername, Lpassword);
+
+        if (res.isSuccess()) {
+            JOptionPane.showMessageDialog(this, res.getMsg(), "Success", JOptionPane.INFORMATION_MESSAGE);
+
+            // Load the logged-in user from session
+            Users currentUser = LocalSession.loadUser();
+            System.out.println("Logged in user: " + currentUser.getUsername());
+            new Dashboard().setVisible(true);
+            // get the parent JFrame that contains this panel
+            java.awt.Window window = javax.swing.SwingUtilities.getWindowAncestor(this);
+            if (window instanceof javax.swing.JFrame frame) {
+                frame.dispose();
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, res.getMsg(), "Login Failed", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_jButton2ActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -166,7 +196,7 @@ public class LoginContainer extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPasswordField jPasswordField1;
-    private javax.swing.JTextField jTextField1;
     private javax.swing.JToggleButton jToggleButton1;
+    private javax.swing.JTextField username;
     // End of variables declaration//GEN-END:variables
 }

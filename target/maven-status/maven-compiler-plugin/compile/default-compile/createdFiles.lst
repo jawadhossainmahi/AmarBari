@@ -1,8 +1,10 @@
-com\mycompany\varamanagementsystem\RegisterContainer.class
-Users.class
-com\mycompany\varamanagementsystem\RegisterForm.class
-com\mycompany\varamanagementsystem\VaraManagementSystem.class
+Util\Response.class
+View\VaraManagementSystem.class
+View\LoginContainer.class
+View\Dashboard\Dashboard.class
+View\Dashboard\Profile.class
 database\MySqlDb.class
-com\mycompany\varamanagementsystem\LoginForm.class
-com\mycompany\varamanagementsystem\Main.class
-com\mycompany\varamanagementsystem\LoginContainer.class
+View\RegisterContainer.class
+Models\Users.class
+Util\LocalSession.class
+View\Main.class
