@@ -60,6 +60,7 @@ public class LoginContainer extends javax.swing.JPanel {
         jButton2.addActionListener(this::jButton2ActionPerformed);
 
         jToggleButton1.setText("show");
+        jToggleButton1.addActionListener(this::jToggleButton1ActionPerformed);
 
         jButton3.setText("sign up");
         jButton3.addActionListener(this::jButton3ActionPerformed);
@@ -172,7 +173,7 @@ public class LoginContainer extends javax.swing.JPanel {
             JOptionPane.showMessageDialog(this, res.getMsg(), "Success", JOptionPane.INFORMATION_MESSAGE);
 
             // Load the logged-in user from session
-            Users currentUser = LocalSession.loadUser();
+            Users currentUser = LocalSession.user();
             System.out.println("Logged in user: " + currentUser.getUsername());
             new Dashboard().setVisible(true);
             // get the parent JFrame that contains this panel
@@ -184,6 +185,18 @@ public class LoginContainer extends javax.swing.JPanel {
             JOptionPane.showMessageDialog(this, res.getMsg(), "Login Failed", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jToggleButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jToggleButton1ActionPerformed
+        if (jToggleButton1.isSelected()) {
+            // Show password
+            jPasswordField1.setEchoChar((char) 0);
+            jToggleButton1.setText("hide"); // update button text
+        } else {
+            // Hide password
+            jPasswordField1.setEchoChar('*');
+            jToggleButton1.setText("show"); // update button text
+        }
+    }//GEN-LAST:event_jToggleButton1ActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

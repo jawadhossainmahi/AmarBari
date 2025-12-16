@@ -6,6 +6,9 @@ package View.Dashboard;
 
 import Models.Users;
 import Util.LocalSession;
+import View.Dashboard.Building.ListBuilding;
+import View.Dashboard.BuildingRooms.AddRoom;
+import View.Dashboard.BuildingRooms.ListRoom;
 import View.Main;
 import java.awt.BorderLayout;
 
@@ -44,17 +47,16 @@ public class Dashboard extends javax.swing.JFrame {
     private void initComponents() {
         java.awt.GridBagConstraints gridBagConstraints;
 
-        jMenuItem1 = new javax.swing.JMenuItem();
         jContainer = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu2 = new javax.swing.JMenu();
-        jMenu3 = new javax.swing.JMenu();
+        jCheckBoxMenuItem1 = new javax.swing.JCheckBoxMenuItem();
+        jMenuItem1 = new javax.swing.JMenuItem();
         jMenu4 = new javax.swing.JMenu();
         jMenuItem3 = new javax.swing.JMenuItem();
-
-        jMenuItem1.setText("jMenuItem1");
+        jMenuItem2 = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -89,18 +91,29 @@ public class Dashboard extends javax.swing.JFrame {
         gridBagConstraints.insets = new java.awt.Insets(149, 145, 169, 146);
         jContainer.add(jPanel2, gridBagConstraints);
 
-        jMenu2.setText("Edit");
+        jMenu2.setText("menu");
+
+        jCheckBoxMenuItem1.setSelected(true);
+        jCheckBoxMenuItem1.setText("Buildings");
+        jCheckBoxMenuItem1.addActionListener(this::jCheckBoxMenuItem1ActionPerformed);
+        jMenu2.add(jCheckBoxMenuItem1);
+
+        jMenuItem1.setText("Rooms");
+        jMenuItem1.addActionListener(this::jMenuItem1ActionPerformed);
+        jMenu2.add(jMenuItem1);
+
         jMenuBar1.add(jMenu2);
 
-        jMenu3.setText("jMenu3");
-        jMenuBar1.add(jMenu3);
-
-        jMenu4.setText("profile");
+        jMenu4.setText("Account");
         jMenu4.addActionListener(this::jMenu4ActionPerformed);
 
         jMenuItem3.setText("view");
         jMenuItem3.addActionListener(this::jMenuItem3ActionPerformed);
         jMenu4.add(jMenuItem3);
+
+        jMenuItem2.setText("logout");
+        jMenuItem2.addActionListener(this::jMenuItem2ActionPerformed);
+        jMenu4.add(jMenuItem2);
 
         jMenuBar1.add(jMenu4);
 
@@ -125,14 +138,26 @@ public class Dashboard extends javax.swing.JFrame {
     }//GEN-LAST:event_jMenu4ActionPerformed
 
     private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
-        System.out.println("clicked");
         Profile view = new Profile(fName, lName, email, username, user_type);
-        jContainer.removeAll();
-        jContainer.add(view);
-        jContainer.revalidate();
-        jContainer.repaint();
-        this.setTitle("Profile Page");
+        setJContainerContent(view, "Profile Page");
     }//GEN-LAST:event_jMenuItem3ActionPerformed
+
+    private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
+        LocalSession.clear();
+        Main m = new Main();
+        m.setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_jMenuItem2ActionPerformed
+
+    private void jCheckBoxMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBoxMenuItem1ActionPerformed
+        ListBuilding view = new ListBuilding(this);
+        setJContainerContent(view, "Building List");
+    }//GEN-LAST:event_jCheckBoxMenuItem1ActionPerformed
+
+    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
+        ListRoom view = new ListRoom(this);
+        setJContainerContent(view, "Room List");
+    }//GEN-LAST:event_jMenuItem1ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -159,14 +184,25 @@ public class Dashboard extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(() -> new Dashboard().setVisible(true));
     }
 
+    // Reusable function to swap content
+    public void setJContainerContent(javax.swing.JPanel p, String title) {
+        jContainer.removeAll();
+        jContainer.add(p);
+        jContainer.revalidate();
+        jContainer.repaint();
+        this.setTitle(title);
+    }
+
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItem1;
     private javax.swing.JPanel jContainer;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JMenu jMenu2;
-    private javax.swing.JMenu jMenu3;
     private javax.swing.JMenu jMenu4;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
+    private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JPanel jPanel2;
     // End of variables declaration//GEN-END:variables

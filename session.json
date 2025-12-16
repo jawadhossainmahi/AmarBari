@@ -1,1 +1,9 @@
-{"id":1,"firstName":"jawad","lastName":"hossain","email":"mahi@gmail.com","username":"mahi","userType":"2","createdAt":"2025-11-27 16:41:25"}
+{
+  "id": 8,
+  "firstName": "mahi",
+  "lastName": "mahi",
+  "email": "mahi@gmail.com",
+  "username": "mahi",
+  "userType": "1",
+  "createdAt": "2025-11-28 19:19:03"
+}

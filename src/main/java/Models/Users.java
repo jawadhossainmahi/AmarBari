@@ -3,10 +3,9 @@ package Models;
 import Database.MySqlDb;
 import Util.LocalSession;
 import Util.Response;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.sql.*;
 import java.util.ArrayList;
+import org.mindrot.jbcrypt.BCrypt;
 
 public class Users {
 
@@ -32,7 +31,7 @@ public class Users {
     }
 
     // ==========================
-    // LOGIN USER
+    // LOGIN USER (BCrypt)
     // ==========================
     public static Response login(String username, String password) {
         String sql = "SELECT * FROM users WHERE username=?";
@@ -44,10 +43,12 @@ public class Users {
 
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
-                String storedHashedPassword = rs.getString("password");
-                String hashedInput = hashPassword(password);
 
-                if (storedHashedPassword.equals(hashedInput)) {
+                String storedHash = rs.getString("password");
+
+                // Compare hashed password using BCrypt
+                if (BCrypt.checkpw(password, storedHash)) {
+
                     // Successful login
                     Users user = new Users();
                     user.id = rs.getInt("id");
@@ -57,14 +58,16 @@ public class Users {
                     user.userType = rs.getString("user_type");
                     user.email = rs.getString("email");
                     user.createdAt = rs.getString("created_at");
-                    
-                    // ✅ Save session
+
+                    // Save user to session
                     LocalSession.saveUser(user);
 
                     return new Response(true, "Login successful!");
+
                 } else {
                     return new Response(false, "Incorrect password!");
                 }
+
             } else {
                 return new Response(false, "Username not found!");
             }
@@ -75,20 +78,10 @@ public class Users {
     }
 
     // ==========================
-    // PASSWORD HASHING
+    // PASSWORD HASHING (BCrypt)
     // ==========================
-    private static String hashPassword(String password) {
-        try {
-            MessageDigest md = MessageDigest.getInstance("SHA-256");
-            byte[] hashedBytes = md.digest(password.getBytes());
-            StringBuilder sb = new StringBuilder();
-            for (byte b : hashedBytes) {
-                sb.append(String.format("%02x", b));
-            }
-            return sb.toString();
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException(e);
-        }
+    private static String hashPassword(String plainPassword) {
+        return BCrypt.hashpw(plainPassword, BCrypt.gensalt());
     }
 
     // ==========================
@@ -96,19 +89,22 @@ public class Users {
     // ==========================
     public Response create() {
         String sql = "INSERT INTO users (first_name, last_name, email, username, password, user_type) VALUES (?, ?, ?, ?, ?, ?)";
+
         try {
             MySqlDb db = new MySqlDb();
             PreparedStatement stmt = db.conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-            String hPassword = hashPassword(this.password);
+
+            String hashedPassword = hashPassword(this.password);
 
             stmt.setString(1, this.firstName);
             stmt.setString(2, this.lastName);
             stmt.setString(3, this.email);
             stmt.setString(4, this.username);
-            stmt.setString(5, hPassword);
+            stmt.setString(5, hashedPassword);
             stmt.setString(6, this.userType);
 
             int affectedRows = stmt.executeUpdate();
+
             if (affectedRows > 0) {
                 ResultSet rs = stmt.getGeneratedKeys();
                 if (rs.next()) {
@@ -135,13 +131,14 @@ public class Users {
         try {
             MySqlDb db = new MySqlDb();
             PreparedStatement stmt = db.conn.prepareStatement(sql);
-            String hPassword = hashPassword(this.password);
+
+            String hashedPassword = hashPassword(this.password);
 
             stmt.setString(1, this.firstName);
             stmt.setString(2, this.lastName);
             stmt.setString(3, this.email);
             stmt.setString(4, this.username);
-            stmt.setString(5, hPassword);
+            stmt.setString(5, hashedPassword);
             stmt.setString(6, this.userType);
             stmt.setInt(7, this.id);
 
@@ -193,6 +190,7 @@ public class Users {
             MySqlDb db = new MySqlDb();
             PreparedStatement stmt = db.conn.prepareStatement(sql);
             stmt.setInt(1, userId);
+
             ResultSet rs = stmt.executeQuery();
 
             if (rs.next()) {
