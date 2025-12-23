@@ -13,6 +13,7 @@ public class Rooms {
     private Double rent;
     private int building_id;
     private String created_at;
+    private int is_booked;
 
     public Rooms() {
     }
@@ -122,6 +123,7 @@ public class Rooms {
                 rooms.room_details = rs.getString("room_details");
                 rooms.rent = rs.getDouble("rent");
                 rooms.building_id = rs.getInt("building_id");
+                rooms.is_booked = rs.getInt("is_booked");
             }
 
         } catch (SQLException e) {
@@ -132,8 +134,8 @@ public class Rooms {
     }
 
     // ==========================
-// GET BUILDINGS BY USER ID
-// ==========================
+    // GET BUILDINGS BY USER ID
+    // ==========================
     public static ArrayList<Rooms> byBuildingId(int buildingID) {
         String sql = "SELECT * FROM rooms WHERE building_id=?";
         ArrayList<Rooms> list = new ArrayList<>();
@@ -193,6 +195,100 @@ public class Rooms {
     }
 
     // ==========================
+    // GET BOOKED/NON BOOKED ROOM
+    // ==========================
+    // Default: booked rooms (false)
+    public static ArrayList<Rooms> byBooked() {
+        return byBooked(false);  // calls the overloaded method
+    }
+
+    // Overloaded: use parameter if passed
+    public static ArrayList<Rooms> byBooked(boolean isBooked) {
+        ArrayList<Rooms> list = new ArrayList<>();
+        String sql = "SELECT * FROM rooms WHERE is_booked = ?";
+
+        try {
+            MySqlDb db = new MySqlDb();
+            PreparedStatement stmt = db.conn.prepareStatement(sql);
+            stmt.setBoolean(1, isBooked);  // bind param (true/false)
+
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                Rooms b = new Rooms();
+                b.id = rs.getInt("id");
+                b.room_name = rs.getString("room_name");
+                b.room_details = rs.getString("room_details");
+                b.rent = rs.getDouble("rent");
+                b.building_id = rs.getInt("building_id");
+                b.created_at = rs.getString("created_at");
+                list.add(b);
+            }
+
+            rs.close();
+            stmt.close();
+            db.conn.close();
+
+        } catch (SQLException e) {
+            System.out.println("Fetch error: " + e.getMessage());
+        }
+
+        return list;
+    }
+
+    public Response BookRoom(Rooms room) {
+        Response res;
+        if (room == null) {
+            res = new Response(false, "No Room Found");
+            return res;
+        }
+        String sql = "UPDATE rooms SET is_booked = ? WHERE id = ?";
+        try {
+            MySqlDb db = new MySqlDb();
+            PreparedStatement stmt = db.conn.prepareStatement(sql);
+            stmt.setBoolean(1, true);
+            stmt.setInt(2, room.id);
+            int rows = stmt.executeUpdate();
+            if (rows > 0) {
+                res = new Response(true, "Room booked successfully");
+            } else {
+                res = new Response(false, "No room found " + room.id);
+            }
+            stmt.close();
+            db.conn.close();
+        } catch (SQLException e) {
+            res = new Response(false, "Booking failed: " + e.getMessage());
+        }
+        return res;
+    }
+
+    public Response CheckoutRoom(Rooms room) {
+        Response res;
+        if (room == null) {
+            res = new Response(false, "No Room Found");
+            return res;
+        }
+        String sql = "UPDATE rooms SET is_booked = ? WHERE id = ?";
+        try {
+            MySqlDb db = new MySqlDb();
+            PreparedStatement stmt = db.conn.prepareStatement(sql);
+            stmt.setBoolean(1, false);
+            stmt.setInt(2, room.id);
+            int rows = stmt.executeUpdate();
+            if (rows > 0) {
+                res = new Response(true, "Room booked successfully");
+            } else {
+                res = new Response(false, "No room found " + room.id);
+            }
+            stmt.close();
+            db.conn.close();
+        } catch (SQLException e) {
+            res = new Response(false, "Booking failed: " + e.getMessage());
+        }
+        return res;
+    }
+
+    // ==========================
     // GETTERS & SETTERS
     // ==========================
     public int getId() {
@@ -229,6 +325,15 @@ public class Rooms {
 
     public String getCreatedAt() {
         return created_at;
+    }
+
+    public int getBooked() {
+        return is_booked;
+    }
+
+    public Buildings getBuilding() {
+        Buildings b = new Buildings().find(building_id);
+        return b;
     }
 
 }

@@ -6,6 +6,7 @@ package View;
 
 import Models.Users;
 import Util.LocalSession;
+import View.Dashboard.CustomerDashboard;
 import View.Dashboard.Dashboard;
 
 /**
@@ -104,8 +105,11 @@ public class Main extends javax.swing.JFrame {
 
         if (currentUser != null && currentUser.getUsername() != null && !currentUser.getUsername().isEmpty()) {
 
-            // User session exists → go to dashboard
-            new Dashboard().setVisible(true);
+            if ("1".equals(currentUser.getUserType())) {
+                new Dashboard().setVisible(true);
+            } else if ("2".equals(currentUser.getUserType())) {
+                new CustomerDashboard().setVisible(true);
+            }
             this.dispose();
 
         } else {

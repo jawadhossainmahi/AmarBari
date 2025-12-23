@@ -7,6 +7,7 @@ package View;
 import Models.Users;
 import Util.LocalSession;
 import Util.Response;
+import View.Dashboard.CustomerDashboard;
 import View.Dashboard.Dashboard;
 import javax.swing.JOptionPane;
 
@@ -175,7 +176,11 @@ public class LoginContainer extends javax.swing.JPanel {
             // Load the logged-in user from session
             Users currentUser = LocalSession.user();
             System.out.println("Logged in user: " + currentUser.getUsername());
-            new Dashboard().setVisible(true);
+            if ("1".equals(currentUser.getUserType())) {
+                new Dashboard().setVisible(true);
+            } else if ("2".equals(currentUser.getUserType())) {
+                new CustomerDashboard().setVisible(true);
+            }
             // get the parent JFrame that contains this panel
             java.awt.Window window = javax.swing.SwingUtilities.getWindowAncestor(this);
             if (window instanceof javax.swing.JFrame frame) {
