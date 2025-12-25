@@ -2,30 +2,38 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
  */
-package View.Dashboard.Building;
+package View.Dashboard.Customer.Rooms;
 
+import Models.Booking;
 import Models.Buildings;
+import Models.RoomDetails;
 import Models.Users;
 import Util.ActionEditor;
 import Util.ActionRenderer;
 import Util.LocalSession;
 import View.Dashboard.Dashboard;
 import java.util.ArrayList;
-import javax.swing.JFrame;
 import javax.swing.table.DefaultTableModel;
 
 /**
  *
  * @author Mahi
  */
-public class ListBuilding extends javax.swing.JPanel {
+public class BookedRoomTable extends javax.swing.JPanel {
 
     private Dashboard parent;
 
-    public ListBuilding(Dashboard d) {
-        parent = d;
+    /**
+     * Creates new form BookedRoomTable
+     */
+    public BookedRoomTable(Dashboard parent) {
+        this.parent = parent;
         initComponents();
-        loadBuildings();
+        loadTableData();
+    }
+
+    public BookedRoomTable() {
+        initComponents();
     }
 
     /**
@@ -37,23 +45,21 @@ public class ListBuilding extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jLabel1 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
-        jLabel1 = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
+
+        jLabel1.setText("Rent rooms");
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null, null, null},
                 {null, null, null, null, null, null},
                 {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
                 {null, null, null, null, null, null}
             },
             new String [] {
-                "Name", "Address", "Payment Details", "Policy", "Created At", "Action"
+                "Building Name", "Room name", "Rent", "User name", "Booking Date", "Action"
             }
         ) {
             Class[] types = new Class [] {
@@ -69,79 +75,60 @@ public class ListBuilding extends javax.swing.JPanel {
             jTable1.getColumnModel().getColumn(5).setPreferredWidth(200);
         }
 
-        jLabel1.setText("Building List");
-
-        jButton1.setText("Add New");
-        jButton1.addActionListener(this::jButton1ActionPerformed);
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(16, 16, 16)
+                .addGap(29, 29, 29)
                 .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jButton1)
-                .addGap(16, 16, 16))
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 400, Short.MAX_VALUE)
+                .addContainerGap(310, Short.MAX_VALUE))
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
-                    .addComponent(jButton1))
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 243, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(30, 30, 30))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 275, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(35, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
-
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        System.out.println("clicked");
-        AddBuilding view = new AddBuilding(parent);
-        parent.setJContainerContent(view, "Add Builing");
-
-
-    }//GEN-LAST:event_jButton1ActionPerformed
-
-    // In ListBuilding
-    public void reloadBuildings() {
-        loadBuildings();
+    public void reloadTableData() {
+        loadTableData();
     }
 
-    private void loadBuildings() {
+    private void loadTableData() {
         Users loggedInUser = LocalSession.user(); // get current user
         if (loggedInUser == null) {
             System.out.println("No user logged in!");
             return;
         }
-
-        ArrayList<Buildings> buildings = Buildings.byUserId(loggedInUser.getId());
+        ArrayList<RoomDetails> booking_list = new Booking().LoadBookedRoomByOwner(loggedInUser.getId());
         DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
         model.setRowCount(0); // clear existing rows
 
-        for (Buildings b : buildings) {
+        for (RoomDetails b : booking_list) {
             model.addRow(new Object[]{
-                b.getBuildingName(),
-                b.getAddress(),
-                b.getPaymentDetails(),
-                b.getPolicy(),
+                b.getBuilding().getBuildingName(),
+                b.getRoom().getRoomName(),
+                b.getRoom().getRent(),
+                b.getUser().getUsername(),
                 b.getCreatedAt(),
-                b // just text placeholder for the button
+                b
             });
         }
-
         jTable1.setRowHeight(30); // sets all rows to 30 pixels high
-        jTable1.getColumn("Action").setCellRenderer(new ActionRenderer());
-        jTable1.getColumn("Action").setCellEditor(new ActionEditor(jTable1, parent, this::reloadBuildings));
+        jTable1.getColumn("Action").setCellRenderer(new ActionRenderer(true));
+        jTable1.getColumn("Action").setCellEditor(new ActionEditor(jTable1, parent, this::reloadTableData, true));
     }
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;

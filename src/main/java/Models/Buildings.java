@@ -106,6 +106,44 @@ public class Buildings {
         }
     }
 
+    public Response deleteRelatedData() {
+        String deleteBookingsSql = "DELETE FROM booking WHERE room_id IN (SELECT id FROM rooms WHERE building_id = ?)";
+        String deleteRoomsSql = "DELETE FROM rooms WHERE building_id = ?";
+        String deleteBuildingSql = "DELETE FROM buildings WHERE id = ?";
+
+        try {
+            MySqlDb db = new MySqlDb();
+
+            // 1. Delete bookings for rooms in this building
+            try (PreparedStatement stmtBookings = db.conn.prepareStatement(deleteBookingsSql)) {
+                stmtBookings.setInt(1, this.id);
+                stmtBookings.executeUpdate();
+            }
+
+            // 2. Delete rooms for this building
+            try (PreparedStatement stmtRooms = db.conn.prepareStatement(deleteRoomsSql)) {
+                stmtRooms.setInt(1, this.id);
+                stmtRooms.executeUpdate();
+            }
+
+            // 3. Delete the building itself
+            int deleted;
+            try (PreparedStatement stmtBuilding = db.conn.prepareStatement(deleteBuildingSql)) {
+                stmtBuilding.setInt(1, this.id);
+                deleted = stmtBuilding.executeUpdate();
+            }
+
+            if (deleted > 0) {
+                return new Response(true, "Building and related rooms/bookings deleted successfully!");
+            } else {
+                return new Response(false, "No building record deleted.");
+            }
+
+        } catch (SQLException e) {
+            return new Response(false, e.getMessage());
+        }
+    }
+
     // ==========================
     // FIND BUILDING BY ID
     // ==========================
@@ -198,6 +236,24 @@ public class Buildings {
         }
 
         return list;
+    }
+
+    public static Boolean RoomExist(int building_id) {
+        String sql = "SELECT EXISTS (SELECT 1 FROM Rooms WHERE building_id = ? AND is_booked = 1) AS room_exists";
+        try {
+            MySqlDb db = new MySqlDb();
+            PreparedStatement stmt = db.conn.prepareStatement(sql);
+            stmt.setInt(1, building_id);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getBoolean("room_exists"); // true if exists, false otherwise
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false; // default if error or no match
     }
 
     // ==========================

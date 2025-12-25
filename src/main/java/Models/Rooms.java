@@ -154,6 +154,7 @@ public class Rooms {
                 rooms.rent = rs.getDouble("rent");
                 rooms.building_id = rs.getInt("building_id");
                 rooms.created_at = rs.getString("created_at");
+                rooms.is_booked = rs.getInt("is_booked");
                 list.add(rooms);
             }
 
@@ -184,6 +185,7 @@ public class Rooms {
                 b.rent = rs.getDouble("rent");
                 b.building_id = rs.getInt("building_id");
                 b.created_at = rs.getString("created_at");
+                b.is_booked = rs.getInt("is_booked");
                 list.add(b);
             }
 
@@ -222,6 +224,7 @@ public class Rooms {
                 b.rent = rs.getDouble("rent");
                 b.building_id = rs.getInt("building_id");
                 b.created_at = rs.getString("created_at");
+                b.is_booked = rs.getInt("is_booked");
                 list.add(b);
             }
 
@@ -299,7 +302,7 @@ public class Rooms {
         return room_name;
     }
 
-    public void setBuildingName(String room_name) {
+    public void setRoomName(String room_name) {
         this.room_name = room_name;
     }
 
@@ -334,6 +337,10 @@ public class Rooms {
     public Buildings getBuilding() {
         Buildings b = new Buildings().find(building_id);
         return b;
+    }
+
+    public void setBuildingId(int buildingId) {
+        this.building_id = buildingId;
     }
 
 }

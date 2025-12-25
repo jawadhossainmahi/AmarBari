@@ -7,6 +7,8 @@ package View.Dashboard.BuildingRooms;
 import Models.Buildings;
 import Models.Rooms;
 import Models.Users;
+import Util.ActionEditor;
+import Util.ActionRenderer;
 import Util.LocalSession;
 import View.Dashboard.Dashboard;
 import java.util.ArrayList;
@@ -43,17 +45,17 @@ public class ListRoom extends javax.swing.JPanel {
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null}
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null}
             },
             new String [] {
-                "Room name", "Room Details", "Building Name", "Rent", "Created At"
+                "Room name", "Room Details", "Building Name", "Rent", "Created At", "Action"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Double.class, java.lang.String.class
+                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Double.class, java.lang.String.class, java.lang.Object.class
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -61,6 +63,9 @@ public class ListRoom extends javax.swing.JPanel {
             }
         });
         jScrollPane1.setViewportView(jTable1);
+        if (jTable1.getColumnModel().getColumnCount() > 0) {
+            jTable1.getColumnModel().getColumn(5).setPreferredWidth(200);
+        }
 
         jLabel1.setText("Room List");
 
@@ -119,6 +124,11 @@ public class ListRoom extends javax.swing.JPanel {
 
     }//GEN-LAST:event_jButton1ActionPerformed
 
+    // In ListBuilding
+    public void reloadRooms() {
+        loadRooms();
+    }
+
     private void loadRooms() {
         Users loggedInUser = LocalSession.user(); // get current user
         if (loggedInUser == null) {
@@ -138,10 +148,14 @@ public class ListRoom extends javax.swing.JPanel {
                     r.getRoomDetails(),
                     b.getBuildingName(),
                     r.getRent(),
-                    r.getCreatedAt()
+                    r.getCreatedAt(),
+                    r
                 });
             }
         }
+        jTable1.setRowHeight(30); // sets all rows to 30 pixels high
+        jTable1.getColumn("Action").setCellRenderer(new ActionRenderer());
+        jTable1.getColumn("Action").setCellEditor(new ActionEditor(jTable1, parent, this::reloadRooms));
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
