@@ -52,8 +52,20 @@ public class ActionEditor extends AbstractCellEditor implements TableCellEditor 
                     RoomDetails rd = (RoomDetails) currentObject;
                     SendEmail mailer = new SendEmail();
 
-                    Response res = mailer.sendMail(rd.getUser().getEmail(), "Booking Info",
-                            "Room " + rd.getRoom().getRoomName() + " er vara den vai.");
+                    Response res = mailer.sendMail(
+                            rd.getUser().getEmail(),
+                            "Room Booking Confirmation",
+                            "Dear " + rd.getUser().getFirstName() + ",\n\n"
+                            + "We are pleased to inform you that your booking has been successfully confirmed.\n\n"
+                            + "Room Details:\n"
+                            + "Room Name: " + rd.getRoom().getRoomName() + "\n\n"
+                            + "Please ensure that the rental payment is completed according to the building policy.\n\n"
+                            + "If you have any questions, feel free to contact us.\n\n"
+                            + "Thank you for choosing our service.\n\n"
+                            + "Best regards,\n"
+                            + "Hotel Management Team"
+                    );
+
                     if (res.isSuccess()) {
                         JOptionPane.showMessageDialog(parent,
                                 "Mail sent successfully!",
